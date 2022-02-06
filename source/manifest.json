@@ -1,0 +1,42 @@
+{
+  "name": "Extension Boilerplate",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "description": "Webpack/React/Tailwind Extension Boilerplate",
+  "homepage_url": "https://github.com/rakot",
+  "icons": {
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "scripts": [
+      "bg/background.js"
+    ],
+    "persistent": true
+  },
+  "browser_action": {
+    "default_icon": "icons/icon128.png",
+    "default_title": "Popup title",
+    "default_popup": "popup/index.html"
+  },
+  "permissions": [
+    "tabs",
+    "https://*/*",
+    "http://*/*"
+  ],
+  "web_accessible_resources": [
+    "inject/inject.bundle.css",
+    "assets/*.js",
+    "*.js.map"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*/*",
+        "http://*/*"
+      ],
+      "js": [
+        "inject/inject.js"
+      ]
+    }
+  ]
+}
