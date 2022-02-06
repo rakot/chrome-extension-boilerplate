@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "webpack --mode development",
     "build": "webpack --mode production",
     "watch": "webpack --mode development --watch"
   },
