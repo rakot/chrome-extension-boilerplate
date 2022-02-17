@@ -21,28 +21,27 @@ function modifyManifest(buffer) {
     return  JSON.stringify(manifest, null, 2);
 }
 
-module.exports = (env, argv) => {
-    if(argv.mode === 'development') {
-        __IS_DEV__ = true;
-    }
+const isDevelopment = (argv) => {
+    return argv.mode === 'development';
+};
 
-    const jsLoaders = () => {
-        return [{
-            loader: 'babel-loader',
-            options: {
-                presets: [
-                    '@babel/preset-env',
-                    '@babel/preset-react'
-                ],
-                plugins: [
-                    '@babel/plugin-proposal-class-properties'
-                ]
-            }
-        }]
-    }
+const jsLoaders = () => {
+    return [{
+        loader: 'babel-loader',
+        options: {
+            presets: [
+                '@babel/preset-env',
+                '@babel/preset-react'
+            ],
+            plugins: [
+                '@babel/plugin-proposal-class-properties'
+            ]
+        }
+    }]
+}
 
-
-    const config = {
+const getBasicConfig = (version) => {
+    return {
         context: path.resolve(__dirname,'source'),
         mode: 'development',
         entry: {
@@ -55,7 +54,6 @@ module.exports = (env, argv) => {
             filename: '[name].js',
             clean: true,
             environment: { dynamicImport: true },
-            path: path.resolve(__dirname, 'build'),
         },
         module: {
             rules: [
@@ -92,7 +90,7 @@ module.exports = (env, argv) => {
                     {from: 'icons', to: 'icons', priority: 50},
                     {from: 'popup/index.html', to: 'popup/index.html', priority: 50},
                     {from: 'popup/css', to: 'popup/css', priority: 50},
-                    {from: 'manifest.json', to: 'manifest.json', transform (content, path) {
+                    {from: 'manifest-v'+version+'.json', to: 'manifest.json', transform (content, path) {
                             return modifyManifest(content)
                         }, priority: 50}
                 ]
@@ -100,10 +98,18 @@ module.exports = (env, argv) => {
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': JSON.stringify((__IS_DEV__) ? 'development' : 'production')
             }),
-            new WebExtension({background: { entry: 'background', manifest: 2 }}),
+            // new WebExtension({background: { entry: 'background', manifest: version }}),
             new CleanWebpackPlugin(),
         ]
     };
+}
+
+
+const chrome_config =  (env, argv) => {
+    __IS_DEV__ = isDevelopment(argv);
+
+    const config = getBasicConfig(3);
+    config.output.path = path.resolve(__dirname, 'chrome');
 
     if(__IS_DEV__)
     {
@@ -111,9 +117,22 @@ module.exports = (env, argv) => {
         config.plugins.push(new ExtReloader({
             port: 9090, // Which port use to create the server
             reloadPage: true, // Force the reload of the page also
-            manifest: path.resolve(__dirname, "./source/manifest.json")
+            manifest: path.resolve(__dirname, "./source/manifest-v3.json")
         }));
     }
 
     return config;
 }
+
+const firefox_config =  (env, argv) => {
+    __IS_DEV__ = isDevelopment(argv);
+
+    const config = getBasicConfig(2);
+    config.output.path = path.resolve(__dirname, 'firefox');
+
+    return config;
+}
+
+
+
+module.exports = [chrome_config, firefox_config];

@@ -11,4 +11,6 @@
 
 `npm run build` - production build
 
-Extension will be placed into "build" folder.
+Extension will be placed into two different folders:
+- "chrome" - for chrome with manifest v3
+- "firefox" - for firefox with manifest v2
