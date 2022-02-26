@@ -9,18 +9,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 let __IS_DEV__ = false;
 
-function modifyManifest(buffer) {
-    // copy-webpack-plugin passes a buffer
-    let manifest = JSON.parse(buffer.toString());
-
-    if(__IS_DEV__) {
-        manifest.content_security_policy = "script-src 'self' 'unsafe-eval'; object-src 'self'";
-    }
-
-    // pretty print to JSON with two spaces
-    return  JSON.stringify(manifest, null, 2);
-}
-
 const isDevelopment = (argv) => {
     return argv.mode === 'development';
 };
@@ -40,15 +28,16 @@ const jsLoaders = () => {
     }]
 }
 
-const getBasicConfig = (version) => {
+const getBasicConfig = (version, development = false) => {
     return {
         context: path.resolve(__dirname,'source'),
-        mode: 'development',
+        mode: (development) ? 'development' : 'production',
         entry: {
             'bg/background': './bg/background.js',
             'popup/js/popup': './popup/js/popup.js',
             'inject/inject': './inject/inject.js',
         },
+        devtool: false,
         output: {
             chunkFilename: './assets/[name].bundle.js',
             filename: '[name].js',
@@ -90,15 +79,12 @@ const getBasicConfig = (version) => {
                     {from: 'icons', to: 'icons', priority: 50},
                     {from: 'popup/index.html', to: 'popup/index.html', priority: 50},
                     {from: 'popup/css', to: 'popup/css', priority: 50},
-                    {from: 'manifest-v'+version+'.json', to: 'manifest.json', transform (content, path) {
-                            return modifyManifest(content)
-                        }, priority: 50}
+                    {from: 'manifest-v'+version+'.json', to: 'manifest.json', priority: 50}
                 ]
             }),
             new webpack.DefinePlugin({
-                'process.env.NODE_ENV': JSON.stringify((__IS_DEV__) ? 'development' : 'production')
+                'process.env.NODE_ENV': JSON.stringify((development) ? 'development' : 'production')
             }),
-            // new WebExtension({background: { entry: 'background', manifest: version }}),
             new CleanWebpackPlugin(),
         ]
     };
@@ -106,28 +92,33 @@ const getBasicConfig = (version) => {
 
 
 const chrome_config =  (env, argv) => {
-    __IS_DEV__ = isDevelopment(argv);
+    let development = isDevelopment(argv);
 
-    const config = getBasicConfig(3);
+    const config = getBasicConfig(3, development);
     config.output.path = path.resolve(__dirname, 'chrome');
 
-    if(__IS_DEV__)
+    if(development)
     {
-        config.devtool = 'source-map';
-        config.plugins.push(new ExtReloader({
-            port: 9090, // Which port use to create the server
-            reloadPage: true, // Force the reload of the page also
-            manifest: path.resolve(__dirname, "./source/manifest-v3.json")
-        }));
+        // config.plugins.push(new WebExtension({background: { entry: 'bg/background', manifest: 3 }}));
+
+        // config.devtool = 'source-map';
+        // config.plugins.push(new ExtReloader({
+        //     entries: {
+        //         background: 'bg/background',
+        //     },
+        //     port: 9090, // Which port use to create the server
+        //     reloadPage: true, // Force the reload of the page also
+        //     manifest: path.resolve(__dirname, "./source/manifest-v3.json")
+        // }));
     }
 
     return config;
 }
 
 const firefox_config =  (env, argv) => {
-    __IS_DEV__ = isDevelopment(argv);
+    let development = isDevelopment(argv);
 
-    const config = getBasicConfig(2);
+    const config = getBasicConfig(2, development);
     config.output.path = path.resolve(__dirname, 'firefox');
 
     return config;
