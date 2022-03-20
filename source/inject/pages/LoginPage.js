@@ -4,7 +4,7 @@ const LoginPage = () => {
 
     return (
         <div>
-            <button>Test</button>
+            <button>Tester</button>
         </div>
     );
 };

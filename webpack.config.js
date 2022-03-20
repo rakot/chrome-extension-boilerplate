@@ -1,13 +1,10 @@
 const path = require('path');
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
-const WebExtension = require('webpack-target-webextension');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const ExtReloader = require('webpack-ext-reloader');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
-
-let __IS_DEV__ = false;
 
 const isDevelopment = (argv) => {
     return argv.mode === 'development';
@@ -37,7 +34,7 @@ const getBasicConfig = (version, development = false) => {
             'popup/js/popup': './popup/js/popup.js',
             'inject/inject': './inject/inject.js',
         },
-        devtool: false,
+        devtool: development ? 'inline-source-map' : 'source-map',
         output: {
             chunkFilename: './assets/[name].bundle.js',
             filename: '[name].js',
@@ -66,6 +63,7 @@ const getBasicConfig = (version, development = false) => {
             ]
         },
         plugins: [
+            new NodePolyfillPlugin(),
             new MiniCssExtractPlugin({
                 filename: '[name].bundle.css',
                 chunkFilename: '[id].css'
@@ -97,19 +95,8 @@ const chrome_config =  (env, argv) => {
     const config = getBasicConfig(3, development);
     config.output.path = path.resolve(__dirname, 'chrome');
 
-    if(development)
-    {
-        // config.plugins.push(new WebExtension({background: { entry: 'bg/background', manifest: 3 }}));
+    if(development) {
 
-        // config.devtool = 'source-map';
-        // config.plugins.push(new ExtReloader({
-        //     entries: {
-        //         background: 'bg/background',
-        //     },
-        //     port: 9090, // Which port use to create the server
-        //     reloadPage: true, // Force the reload of the page also
-        //     manifest: path.resolve(__dirname, "./source/manifest-v3.json")
-        // }));
     }
 
     return config;
