@@ -1,3 +1,3 @@
-import {RootState} from "../../store";
+import { RootState } from '../../store';
 
-export const selectCounter = (state: RootState) => state.counter.counter
+export const selectCounter = (state: RootState) => state.counter.counter;

@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const initialState:Interface = {
-    counter: 0
-}
-
 interface Interface {
     counter: number;
 }
+
+const initialState:Interface = {
+    counter: 0
+};
 
 export const counterSlice = createSlice({
     name: 'counter',
@@ -20,6 +20,6 @@ export const counterSlice = createSlice({
 
 export const {
     addValueToCounterAction
-} = counterSlice.actions
+} = counterSlice.actions;
 
 export default counterSlice.reducer;

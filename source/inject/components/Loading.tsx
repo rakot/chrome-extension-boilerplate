@@ -1,8 +1,7 @@
-import React, {useContext} from 'react';
-import {ExtensionContext} from "../context";
+import React, { useContext } from 'react';
+import { ExtensionContext } from '../context';
 
 const Loading = () => {
-
     const {
         loading
     } = useContext(ExtensionContext);
