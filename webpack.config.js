@@ -4,6 +4,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+const ExtReloader = require('webpack-ext-reloader-mv3');
 
 
 const isDevelopment = (argv) => {
@@ -29,10 +30,13 @@ const getBasicConfig = (version, development = false) => {
     return {
         context: path.resolve(__dirname,'source'),
         mode: (development) ? 'development' : 'production',
+        resolve: {
+            extensions: ['.tsx', '.ts', '.js'],
+        },
         entry: {
-            'bg/background': './bg/background.js',
-            'popup/js/popup': './popup/js/popup.js',
-            'inject/inject': './inject/inject.js',
+            'bg/background': './bg/background.ts',
+            'popup/js/popup': './popup/js/popup.tsx',
+            'inject/inject': './inject/inject.tsx',
         },
         devtool: development ? 'inline-source-map' : 'source-map',
         output: {
@@ -54,6 +58,11 @@ const getBasicConfig = (version, development = false) => {
                     include: path.resolve(__dirname, 'source/popup/'),
                     exclude: [/node_modules/, path.resolve(__dirname, 'source/inject/')],
                     use: ['style-loader', 'css-loader', 'postcss-loader'],
+                },
+                {
+                    test: /\.tsx?$/,
+                    use: 'ts-loader',
+                    exclude: /node_modules/,
                 },
                 {
                     test: /\.js$/,
@@ -96,7 +105,13 @@ const chrome_config =  (env, argv) => {
     config.output.path = path.resolve(__dirname, 'chrome');
 
     if(development) {
-
+        config.plugins.push(new ExtReloader({
+            entries: {
+                contentScript: 'inject/inject',
+                background: 'bg/background',
+                extensionPage: 'popup/js/popup',
+            }
+        }),);
     }
 
     return config;

@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {ExtensionContext} from "./index";
-import IndexPage from "../pages/IndexPage";
 
-const ExtensionState = (props) => {
+const ExtensionState = (props:any) => {
     const [loading, setLoading] = useState(false);
     const [initNavigationFinished, setInitNavigationFinished] = useState(false);
 
@@ -18,6 +17,7 @@ const ExtensionState = (props) => {
     return (
         <ExtensionContext.Provider value={{
             loading,
+            // @ts-ignore
             setLoading,
             setInitNavigationFinished,
         }}>
