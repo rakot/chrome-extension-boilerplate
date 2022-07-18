@@ -1,4 +1,4 @@
-# Chrome extension boilerplate with TypeScript, React, Redux, Tailwind, Webpack and V3 Manifest
+# Chrome extension boilerplate V3 Manifest with TypeScript, React, Redux, Tailwind and Webpack
 
 - React for both inject and popup scripts
 - Redux storage with PersistGate to extension storage
