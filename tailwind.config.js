@@ -1,5 +1,5 @@
 module.exports = {
-  content: ["./source/inject/**/*.{html,js,jsx}"],
+  content: ["./source/inject/**/*.{html,js,jsx,tsx}"],
   theme: {
     extend: {
       spacing: {
