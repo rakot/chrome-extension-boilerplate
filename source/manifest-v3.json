@@ -22,7 +22,7 @@
     "*://*/*"
   ],
   "web_accessible_resources": [{
-    "resources": ["/inject/inject.bundle.css"],
+    "resources": ["assets/extension.bundle.css"],
     "matches": ["<all_urls>"]
   }],
   "content_scripts": [

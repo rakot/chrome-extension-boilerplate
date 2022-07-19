@@ -25,7 +25,7 @@
     "http://*/*"
   ],
   "web_accessible_resources": [
-    "inject/inject.bundle.css"
+    "assets/extension.bundle.css"
   ],
   "content_scripts": [
     {
