@@ -3,30 +3,15 @@ const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const ExtReloader = require('webpack-ext-reloader-mv3');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const isDevelopment = (argv) => {
     return argv.mode === 'development';
 };
 
 const hotReload = true;
-
-const jsLoaders = () => {
-    return [{
-        loader: 'babel-loader',
-        options: {
-            presets: [
-                '@babel/preset-env',
-                '@babel/preset-react'
-            ],
-            plugins: [
-                '@babel/plugin-proposal-class-properties'
-            ]
-        }
-    }];
-};
 
 const getBasicConfig = (version, development = false) => {
     return {
@@ -49,8 +34,10 @@ const getBasicConfig = (version, development = false) => {
             environment: { dynamicImport: true }
         },
         optimization: {
+            usedExports: true,
+            minimize: !development,
             minimizer: [
-                new CssMinimizerPlugin()
+                new CssMinimizerPlugin(), new TerserPlugin()
             ]
         },
         module: {
@@ -62,18 +49,22 @@ const getBasicConfig = (version, development = false) => {
                 },
                 {
                     test: /\.tsx?$/,
-                    use: 'ts-loader',
-                    exclude: /node_modules/
-                },
-                {
-                    test: /\.js$/,
-                    exclude: [/node_modules/],
-                    use: jsLoaders()
+                    exclude: /node_modules/,
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: [
+                                '@babel/preset-env',
+                                '@babel/preset-react',
+                                '@babel/preset-typescript'
+                            ]
+                        }
+                    }
                 }
             ]
         },
         plugins: [
-            new NodePolyfillPlugin(),
+            new webpack.optimize.AggressiveMergingPlugin(),
             new MiniCssExtractPlugin({
                 filename: '[name].bundle.css',
                 chunkFilename: '[id].css'
@@ -90,7 +81,9 @@ const getBasicConfig = (version, development = false) => {
                 ]
             }),
             new webpack.DefinePlugin({
-                'process.env.NODE_ENV': JSON.stringify((development) ? 'development' : 'production')
+                'process.env': {
+                    NODE_ENV: JSON.stringify((development) ? 'development' : 'production')
+                }
             }),
             new CleanWebpackPlugin()
         ]
