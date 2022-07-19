@@ -44,11 +44,13 @@ const getBasicConfig = (version, development = false) => {
             rules: [
                 {
                     test: /\.css$/i,
+                    include: /source/,
                     exclude: /node_modules/,
                     use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
                 },
                 {
                     test: /\.tsx?$/,
+                    include: /source/,
                     exclude: /node_modules/,
                     use: {
                         loader: 'babel-loader',
