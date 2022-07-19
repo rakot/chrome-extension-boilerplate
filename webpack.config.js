@@ -5,6 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const ExtReloader = require('webpack-ext-reloader-mv3');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 const isDevelopment = (argv) => {
     return argv.mode === 'development';
@@ -46,6 +47,11 @@ const getBasicConfig = (version, development = false) => {
             filename: '[name].js',
             clean: true,
             environment: { dynamicImport: true }
+        },
+        optimization: {
+            minimizer: [
+                new CssMinimizerPlugin()
+            ]
         },
         module: {
             rules: [
