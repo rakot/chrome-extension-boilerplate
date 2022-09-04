@@ -13,6 +13,40 @@ const isDevelopment = (argv) => {
 
 const hotReload = true;
 
+function modifyManifest (buffer, version, development) {
+    // copy-webpack-plugin passes a buffer
+    const manifest = JSON.parse(buffer.toString());
+
+    if (development) {
+        manifest.permissions.push('alerts');
+    }
+
+    if (version === 2) {
+        manifest.manifest_version = 2;
+        manifest.host_permissions.forEach((host) => {
+            manifest.permissions.push(host);
+        });
+        delete manifest.host_permissions;
+        manifest.background.scripts = [manifest.background.service_worker];
+        manifest.background.persistent = true;
+        delete manifest.background.service_worker;
+
+        manifest.browser_action = manifest.action;
+        delete manifest.action;
+
+        const webAccessibleResources = [];
+        manifest.web_accessible_resources.forEach((stack) => {
+            stack.resources.forEach((res) => {
+                webAccessibleResources.push(res);
+            });
+        });
+        manifest.web_accessible_resources = webAccessibleResources;
+    }
+
+    // pretty print to JSON with two spaces
+    return JSON.stringify(manifest, null, 2);
+}
+
 const getBasicConfig = (version, development = false) => {
     return {
         context: path.resolve(__dirname, 'source'),
@@ -79,7 +113,14 @@ const getBasicConfig = (version, development = false) => {
                 patterns: [
                     { from: 'icons', to: 'icons', priority: 50 },
                     { from: 'popup/index.html', to: 'popup/index.html', priority: 50 },
-                    { from: 'manifest-v' + version + '.json', to: 'manifest.json', priority: 50 }
+                    {
+                        from: 'manifest.json',
+                        to: 'manifest.json',
+                        transform (content, path) {
+                            return modifyManifest(content, version, development);
+                        },
+                        priority: 50
+                    }
                 ]
             }),
             new webpack.DefinePlugin({
