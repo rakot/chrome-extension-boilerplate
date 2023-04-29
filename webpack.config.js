@@ -18,7 +18,7 @@ function modifyManifest (buffer, version, development) {
     const manifest = JSON.parse(buffer.toString());
 
     if (development) {
-        manifest.permissions.push('alerts');
+        manifest.permissions.push('alarms');
     }
 
     if (version === 2) {
