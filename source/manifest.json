@@ -1,6 +1,6 @@
 {
   "name": "Extension Boilerplate",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "manifest_version": 3,
   "description": "Webpack/React/Tailwind Extension Boilerplate",
   "homepage_url": "https://github.com/rakot",
@@ -28,8 +28,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://*/*",
-        "http://*/*"
+        "https://github.com/rakot/*"
       ],
       "js": [
         "inject/inject.js"

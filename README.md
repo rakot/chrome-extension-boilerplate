@@ -1,8 +1,9 @@
-# Chrome extension boilerplate V3 Manifest with TypeScript, React, Redux, Tailwind and Webpack
+# Chrome extension boilerplate V3 Manifest with TypeScript, React, Redux, Tailwind, React Query and Webpack
 
 - React for both inject and popup scripts
 - Redux storage with PersistGate to extension storage
 - Tailwind in inject script is sandboxed by ShadowDom and will not affect/be affected by injected page.
+- React Query
 
 
 ## Usage
