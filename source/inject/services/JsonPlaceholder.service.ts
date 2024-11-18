@@ -8,7 +8,8 @@ export const JsonPlaceholderService = {
 };
 
 export const useGetPlaceholderPost = (postId:number) => {
-    return useQuery(['placeholder-post', postId], {
+    return useQuery({
+        queryKey: ['placeholder-post', postId],
         queryFn: () => JsonPlaceholderService.getPost(postId),
         // enabled: false, // To not load by default, load on refetch
         refetchOnMount: false,

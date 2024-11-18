@@ -106,6 +106,9 @@ const getBasicConfig = (version, development = false) => {
                 chunkFilename: '[id].css'
             }),
             new webpack.ProvidePlugin({
+                process: 'process/browser.js'
+            }),
+            new webpack.ProvidePlugin({
                 Buffer: ['buffer', 'Buffer'],
                 process: 'process/browser'
             }),

@@ -6,7 +6,11 @@
     },
     "extends": [
         "plugin:react/recommended",
-        "standard"
+        "standard",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:react/recommended",
+        "plugin:tailwindcss/recommended",
+        "prettier"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -21,7 +25,54 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "semi": ["error", "always"],
-        "indent": ["error", 4]
+        "space-before-function-paren": "off",
+        "react/prefer-stateless-function": "off",
+        "react/jsx-one-expression-per-line": "off",
+        "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
+        "global-require": "off",
+        "arrow-body-style": "off",
+        "no-multiple-empty-lines": ["warn", { "max": 2 }],
+        "max-len": 0,
+        "comma-dangle": 0,
+        "no-extra-semi": "error",
+        "no-debugger": 0,
+        "no-console": [
+            "error",
+            {
+                "allow": ["debug"]
+            }
+        ],
+        "new-cap": 0,
+        "strict": 2,
+        "prefer-rest-params": 0,
+        "no-unused-vars": 1,
+        "no-self-assign": 0,
+        "no-underscore-dangle": 0,
+        "no-use-before-define": 0,
+        "no-extra-boolean-cast": 0,
+        "jsx-quotes": [2, "prefer-double"],
+        "react/jsx-no-undef": 1,
+        "react/jsx-uses-react": 1,
+        "react/jsx-uses-vars": 1,
+        "react/prop-types": 0,
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "react/react-in-jsx-scope": "off",
+        "indent": [
+            "error",
+            4
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ]
     }
 }
